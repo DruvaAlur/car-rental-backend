@@ -10,6 +10,15 @@ function getAllCars() {
       return result;
     });
 }
+function getCarById(id) {
+  return Car.findById(id)
+    .populate("image")
+    .populate("feature")
+    .populate("category")
+    .then((result) => {
+      return result;
+    });
+}
 function getAllCategory() {
   return CategoryImage.find().then((result) => {
     return result;
@@ -17,4 +26,5 @@ function getAllCategory() {
 }
 module.exports = {
   getAllCars,
+  getCarById,
 };
