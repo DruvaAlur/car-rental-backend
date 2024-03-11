@@ -11,6 +11,7 @@ const car = require("../db/cars.js");
 const router = Router();
 const { db } = require("../db/index.js");
 const productsCollection = db.collection("cars");
+const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 
 router.get("/getAllCars", async (req, res) => {
   let cars = await car.getAllCars();
@@ -19,7 +20,8 @@ router.get("/getAllCars", async (req, res) => {
 
 router.get("/getCarById", async (req, res) => {
   const query = req.query.searchQuery;
-  let carDetails = await car.getCarById(query);
+  let carVar = await car.getCarById(query);
+  let carDetails = await car.getCarDetails(carVar.name);
   res.send(carDetails);
 });
 
@@ -132,5 +134,29 @@ router.get(
     }
   }
 );
+
+router.post("/checkout", async (req, resp) => {
+  const carId = req.body.carid;
+  let carVar = await car.getCarById(carId);
+  let carDetails = await car.getCarDetails(carVar.name);
+  const session = await stripe.checkout.sessions.create({
+    success_url: process.env.REDIRECTION_Success_URL,
+    cancel_url: process.env.REDIRECTION_Failure_URL,
+    line_items: [
+      {
+        price_data: {
+          unit_amount: carDetails.price,
+          currency: "inr",
+          product_data: {
+            name: carVar.name,
+          },
+        },
+        quantity: 1,
+      },
+    ],
+    mode: "payment",
+  });
+  resp.json({ redirectionURL: session.url });
+});
 
 module.exports = router;

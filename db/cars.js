@@ -1,4 +1,4 @@
-const { Car, CategoryImage } = require("./index");
+const { Car, CategoryImage, CarDetails } = require("./index");
 const mongoose = require("mongoose");
 
 function getAllCars() {
@@ -19,6 +19,11 @@ function getCarById(id) {
       return result;
     });
 }
+function getCarDetails(name) {
+  return CarDetails.findOne({ carname: name }).then((result) => {
+    return result;
+  });
+}
 function getAllCategory() {
   return CategoryImage.find().then((result) => {
     return result;
@@ -27,4 +32,5 @@ function getAllCategory() {
 module.exports = {
   getAllCars,
   getCarById,
+  getCarDetails,
 };
