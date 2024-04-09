@@ -159,4 +159,10 @@ router.post("/checkout", async (req, resp) => {
   resp.json({ redirectionURL: session.url });
 });
 
+router.post("/getStoreLocation", async (req, resp) => {
+  const city = req.body.city;
+  const state = req.body.state;
+  let response = await car.getCityAndState(city, state);
+  resp.json(response);
+});
 module.exports = router;

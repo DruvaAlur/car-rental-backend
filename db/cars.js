@@ -1,4 +1,4 @@
-const { Car, CategoryImage, CarDetails } = require("./index");
+const { Car, CategoryImage, CarDetails, LocationSchema } = require("./index");
 const mongoose = require("mongoose");
 
 function getAllCars() {
@@ -29,8 +29,21 @@ function getAllCategory() {
     return result;
   });
 }
+
+function getCityAndState(city, state) {
+  let cityRegex = new RegExp(city, "i");
+  let stateRegex = new RegExp(state, "i");
+  return LocationSchema.find({
+    city: { $regex: cityRegex },
+    state: { $regex: stateRegex },
+  }).then((result) => {
+    return result;
+  });
+}
+
 module.exports = {
   getAllCars,
   getCarById,
   getCarDetails,
+  getCityAndState,
 };

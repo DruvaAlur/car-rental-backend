@@ -44,11 +44,27 @@ const carDetailsSchema = new mongoose.Schema({
   discountedPrice: Number,
   image: Array,
 });
+
+const locationSchema = new mongoose.Schema({
+  city: String,
+  state: String,
+  longitude: String,
+  latitude: String,
+});
+
+const userSchema = new mongoose.Schema({
+  email: { type: String, unique: true },
+  password: String,
+  firstname: String,
+  lastname: String,
+});
 const Car = mongoose.model("Car", CarsSchema);
 const Feature = mongoose.model("Feature", FeaturesSchema);
 const CarImage = mongoose.model("CarImage", CarImageSchema);
 const CategoryImage = mongoose.model("Category", categorySchema);
 const CarDetails = mongoose.model("car-detail", carDetailsSchema);
+const LocationSchema = mongoose.model("store-location", locationSchema);
+const UserSchema = mongoose.model("User", userSchema);
 
 module.exports = {
   Car,
@@ -56,5 +72,7 @@ module.exports = {
   CarImage,
   CategoryImage,
   CarDetails,
+  LocationSchema,
   db,
+  UserSchema,
 };
