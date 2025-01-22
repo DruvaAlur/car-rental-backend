@@ -6,6 +6,7 @@ const app = express();
 const cookieParser = require("cookie-parser");
 const carsRouter = require("./routes/cars");
 const authRouter = require("./routes/auth");
+const StoreLocationRouter = require("./routes/storeLocations");
 const cors = require("cors");
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -18,6 +19,7 @@ app.use(
 );
 app.use("/cars", carsRouter);
 app.use("/auth", authRouter);
+app.use("/stores", StoreLocationRouter);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

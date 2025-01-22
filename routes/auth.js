@@ -3,6 +3,7 @@ const auth = require("../db/auth");
 const JWT_SECRET = process.env.JWT_SECRET;
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const { OAuth2Client } = require("google-auth-library");
 
 const router = Router();
 router.post("/signUp", async (req, res) => {
@@ -65,6 +66,45 @@ router.get("/checkStatus", async (req, res) => {
   }
   const decoded = jwt.verify(token, JWT_SECRET);
   res.send(decoded);
+});
+
+router.post("/authLogin", async (req, res) => {
+  const { idToken } = req.body;
+  console.log(idToken);
+  console.log(process.env.Google_Client_Id);
+  const client = new OAuth2Client(process.env.Google_Client_Id);
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken,
+      audience: process.env.Google_Client_Id,
+    });
+
+    const payload = ticket.getPayload();
+
+    let user = await auth.getUserByEmail(payload.email);
+    console.log(payload);
+
+    if (!user) {
+      user = auth.insertUser({
+        email: payload.email,
+        firstname: payload.given_name,
+        lastname: payload.family_name,
+      });
+    }
+
+    const token = jwt.sign(
+      {
+        id: user.id,
+        email: user.email,
+      },
+      JWT_SECRET
+    );
+
+    res.cookie("token", token);
+    res.status(200).json({ error: "User Loggedin Sucessfully", token });
+  } catch (error) {
+    res.status(400).json({ message: "Invalid token", error });
+  }
 });
 
 module.exports = router;

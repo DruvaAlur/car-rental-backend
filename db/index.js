@@ -11,6 +11,7 @@ mongoose.connect(`${process.env.MONGO_SERVER_URL}/car-rental`);
 const client = new MongoClient(process.env.MONGO_SERVER_URL);
 const db = client.db("car-rental");
 const productsCollection = db.collection("car-rental");
+
 const CarsSchema = new mongoose.Schema({
   name: { type: String, unique: true },
   category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
