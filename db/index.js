@@ -59,6 +59,10 @@ const userSchema = new mongoose.Schema({
   firstname: String,
   lastname: String,
 });
+
+const citySchema = new mongoose.Schema({
+  cityName: String,
+});
 const Car = mongoose.model("Car", CarsSchema);
 const Feature = mongoose.model("Feature", FeaturesSchema);
 const CarImage = mongoose.model("CarImage", CarImageSchema);
@@ -66,6 +70,7 @@ const CategoryImage = mongoose.model("Category", categorySchema);
 const CarDetails = mongoose.model("car-detail", carDetailsSchema);
 const LocationSchema = mongoose.model("store-location", locationSchema);
 const UserSchema = mongoose.model("User", userSchema);
+const CitySchema = mongoose.model("City", citySchema);
 
 module.exports = {
   Car,
@@ -76,4 +81,5 @@ module.exports = {
   LocationSchema,
   db,
   UserSchema,
+  CitySchema,
 };

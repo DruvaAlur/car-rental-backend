@@ -9,7 +9,7 @@ const { Router } = require("express");
 // const adminMiddleware = require("../middleware/admin");
 const car = require("../db/cars.js");
 const router = Router();
-const { db } = require("../db/index.js");
+const { db, CitySchema } = require("../db/index.js");
 const productsCollection = db.collection("cars");
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 
@@ -32,6 +32,8 @@ router.get("/getCategoryWiseCars", async (req, res) => {
 
 router.get("/search", async (req, res) => {
   const query = req.query.searchQuery;
+  console.log(query);
+
   try {
     const agg = [
       {
@@ -87,6 +89,8 @@ router.get("/search", async (req, res) => {
     ];
     // run pipeline
     const results = await productsCollection.aggregate(agg).toArray();
+    console.log(results);
+
     res.json(results);
   } catch (err) {
     console.error("Search error:", err);
@@ -127,6 +131,8 @@ router.get(
       ];
       // run pipeline
       const results = await productsCollection.aggregate(agg).toArray();
+      console.log(results);
+
       res.json(results);
     } catch (err) {
       console.error("Search error:", err);
@@ -163,6 +169,11 @@ router.post("/getStoreLocation", async (req, resp) => {
   const city = req.body.city;
   const state = req.body.state;
   let response = await car.getCityAndState(city, state);
+  resp.json(response);
+});
+
+router.get("/getCityList", async (req, resp) => {
+  let response = await car.getAllCities();
   resp.json(response);
 });
 module.exports = router;
